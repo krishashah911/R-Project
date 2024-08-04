@@ -1,0 +1,186 @@
+---
+title: "Math 660"
+output:
+  pdf_document: default
+  html_document: default
+date: "Sep 2023"
+theme: cerulean
+---
+
+<!-- For more info on RMarkdown see http://rmarkdown.rstudio.com/ -->
+
+## Name: Krisha Shah
+
+```{r echo=FALSE}
+library(ggplot2)
+zip_code_data <- read.csv("CovidData-NYCZipcodeCounts.csv")
+daily_data <- read.csv("CovidData-NYStateDailyCounts.csv")
+```
+### 1. Use the ggplot2 package to recreate the following plots using the Covid-19 datasets. You are supposed to match the plots shown as closely as possible, including colors, symbols, points/lines, labels etc.
+
+### (a) A bar graph showing the number of zipcodes in each NYC borough.
+
+```{r, fig.align='center'}
+qplot(BOROUGH_GROUP, data = zip_code_data,xlab="",ylab="Number of zip codes")
+```
+### Comment: X-axis shows the group of NYC borough and Y-axis shows the count of zip codes. We can conclude that Queens has the maximum number of zip codes.
+
+### (b) Histogram of the number of Covid cases by zipcode, using a bin width of 100.
+
+```{r, fig.align='center'}
+qplot(COVID_CASE_COUNT, data = zip_code_data,ylab="count",binwidth = 100)
+```
+### Comment: The histogram displays the distribution of COVID case counts across different zip codes. Each bar in the histogram represents a range of COVID case counts (bin width of 100), and the height of each bar indicates the number of zip codes falling within that particular range.
+
+### (c) Similar to a histogram of the number of Covid cases by zipcode, using a bin width of 100, but with the bars represented by points instead.
+
+```{r, fig.align='center'}
+ggplot(zip_code_data, aes(x=COVID_CASE_COUNT)) + stat_bin(geom ="point")
+```
+### Comment: The plot is similar to previous question. The conclusion is same just that instead of histogram we represent point plot.
+
+### (d) Side-by-side boxplots of the total number of tests conducted in each zipcode
+
+```{r, fig.align='center'}
+qplot(factor(BOROUGH_GROUP),TOTAL_COVID_TESTS, data = zip_code_data, geom ="boxplot", xlab="BOROUGH_GROUP")
+```
+### Comment: The side-by-side boxplots provide a visual representation of the distribution of total COVID tests conducted in different zip codes, categorized by borough group. We can easily compare the distribution of total COVID tests conducted across borough groups which allows to identify variations in testing patterns and potential outliers in specific boroughs.
+
+### (e) Scatter plot of Covid deaths by zipcode vs Percent positive by zipcode 
+
+```{r, fig.align='center'}
+qplot(PERCENT_POSITIVE, COVID_DEATH_COUNT, data= zip_code_data, colour = BOROUGH_GROUP, shape = BOROUGH_GROUP)
+```
+### Comment: The scatter plot shows percent of positive cases on the X-axis and covid death count on the Y-axis. Here we try to show different borough groups using various shapes and symbols.
+
+### (f) Scatter plot of zipcode deaths vs case counts, separated by borough and with a fitted line 
+
+```{r, fig.align='center'}
+qplot(COVID_CASE_COUNT, COVID_DEATH_COUNT, data= zip_code_data, facets = ~BOROUGH_GROUP) + geom_smooth(method = "lm", colour = "red") + facet_wrap(~BOROUGH_GROUP, ncol=1)
+```
+### Comment: We have created a scatter plot here for covid case counts vs covid dead counts. The linear fitted line is created using geom_smooth and to showcase all borough graphs in a single plot we use facets.
+
+### (g) A timeplot of the daily number of cases and number of deaths 
+
+```{r, fig.align='center'}
+qplot(y=Cases, data= daily_data, xlab="Day 1 is Feb 29,2020", ylab="Number of Cases and Deaths") + geom_line(aes(y = Deaths))
+```
+### Comment: The following plot shows scatter dots to represent number of cases and the solid line represents number of deaths using geom_line. And the data is starting from Feb 29, 2020. 
+
+### (h) Scatter plot of the daily number of deaths vs daily number of cases 
+
+```{r, fig.align='center'}
+qplot(x= Cases, y=Deaths, data= daily_data, shape = "square") + geom_point(aes(colour = Hospitalizations)) + scale_shape_manual(values = c(3))
+
+# Reference: https://ggplot2.tidyverse.org/
+```
+### Comment: This is a normal scatter plot like any other previous questions. However we have added a geom_point color which automatically sets shades of blue and a plus symbol using scale_shape_manual with a value 3 that is for the plus sign.
+
+### (i) Scatter plot of the daily proportion of deaths to cases, vs number of cases
+
+```{r, fig.align='center'}
+qplot(y= Deaths/Cases, x=Cases, data= daily_data, ylab="Proportion of deaths to cases") + geom_point(aes(colour = Hospitalizations))
+```
+### Comment: In this scatter plot, we show proportion of deaths to cases in the Y-axis and number of cases on the X-axis. The color coding is again set using geom_point(aes(color)).
+
+### 2. Write R code to perform the following with the Covid data
+
+### (a) Find the total number of cases in New York City. Find also the total population.
+
+```{r}
+total_cases = sum(zip_code_data$COVID_CASE_COUNT)
+cat("Total number of cases in New York City =", total_cases)
+
+total_population = sum(floor(zip_code_data$POP_DENOMINATOR))
+cat("\nTotal population =", total_population)
+```
+
+### (b) Obtain summary statistics of all the numerical columns in Covidbyzip. Use the lapply and sapply functions
+
+```{r}
+df <- zip_code_data[, c("COVID_CASE_COUNT", "COVID_CASE_RATE", "POP_DENOMINATOR", "COVID_DEATH_COUNT", "COVID_DEATH_RATE", "PERCENT_POSITIVE", "TOTAL_COVID_TESTS")]
+
+lapply(df, summary)
+```
+```{r}
+sapply(df, summary)
+```
+
+### (c) Obtain summary statistics of Covid case counts for Manhattan zipcodes only.
+
+```{r}
+covid_case_count1 <- zip_code_data[zip_code_data$BOROUGH_GROUP == "Manhattan","COVID_CASE_COUNT"] 
+covid_case_count_summary1 <- summary(covid_case_count1)
+print("For Manhattan Zipcode:")
+print(covid_case_count_summary1)
+```
+
+### (d) Do the same thing for the Queens zipcodes only and Staten Island zipcodes only.
+
+```{r}
+covid_case_count2 <- zip_code_data[zip_code_data$BOROUGH_GROUP == "Queens","COVID_CASE_COUNT"] 
+covid_case_count_summary2 <- summary(covid_case_count2)
+print("For Queens Zipcode:")
+print(covid_case_count_summary2)
+```
+
+```{r}
+covid_case_count3 <- zip_code_data[zip_code_data$BOROUGH_GROUP == "Staten Island","COVID_CASE_COUNT"] 
+covid_case_count_summary3 <- summary(covid_case_count3)
+print("For Staten Island Zipcode:")
+print(covid_case_count_summary3)
+```
+
+### (e) Identify the NYC zipcode and neighborhood name with the highest case rate.
+
+```{r}
+highest_zipcode <- zip_code_data[which.max(zip_code_data$COVID_CASE_RATE),c(1,2)]
+print(highest_zipcode$NEIGHBORHOOD_NAME)
+```
+
+### (f) On which day were there the most number of deaths relative to hospitalizations in NY State
+
+```{r}
+Most_Deaths <- daily_data$Deaths/daily_data$Hospitalizations
+
+max(subset(Most_Deaths, Most_Deaths>=0 & Most_Deaths<Inf))
+```
+
+### 3. Write R code to do the following:
+
+### (a) Use seq to create a vector with elements 2, 4, 6, ... to 24. Extract the 5th value of this vector
+
+```{r}
+vector1 <- seq(2, 24, by=2)
+cat("The 5th value of this vector is: ", vector1[5])
+```
+
+### (b) Reverse the order of your vector above. 
+
+```{r}
+print(rev(vector1))
+```
+
+### (c) Create a vector consisting of, fifty 1’s, twenty-six 2’s and seventeen 3’s, in that order. 
+
+```{r}
+vector2 <- rep(c(1,2,3), times=c(50,26,17))
+print(vector2)
+```
+
+### (d) Create a diagonal matrix with the numbers 1, 2, 3, ... 10 in the diagonal. Find its inverse
+
+```{r}
+diag_matrix <- diag(seq(1:10))
+print(diag_matrix)
+
+inverse_matrix <- solve(diag_matrix)
+print(inverse_matrix)
+```
+
+### (e) Extract the 5th column of the matrix you created in 3(d). Make this vector (i.e the 5th column) into a 2 × 5 matrix, fillng out the matrix by row.
+
+```{r}
+new_matrix <- inverse_matrix[,5]
+print(matrix(new_matrix, nrow = 2, byrow = TRUE))
+```
