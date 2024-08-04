@@ -1,0 +1,111 @@
+---
+title: "CI7330"
+output:
+  pdf_document: default
+  html_document: default
+date: "Nov 2023"
+theme: cerulean
+---
+
+<!-- For more info on RMarkdown see http://rmarkdown.rstudio.com/ -->
+
+
+# Data Analytics and Visualization (CI7330)
+# Report Title: Exploratory Data Analysis of Weekly Shopping Dataset
+## Name: Druvil Sameer Shah (K2274961)
+
+
+### Introduction:
+#### This report focuses on the weekly shopping dataset to understand the data and represent them as visualizations to get some observations which can presented even to a general audience. The dataset is manually created containing data features like spend, qtime, famsize, store, shoptype and income. The dataset created from these data features will be used to understand the statistics of the features and create visual representations.
+
+### Dataset:
+#### The dataset has six data features as discussed below:
+#### a.	Spend- The amount spent on weekly shopping at the supermarket
+#### b.	Qtime- The time taken in the queue at the checkout or the collecting point.
+#### c.	Famsize- The number of household members including the buyer
+#### d.	Store- Indicates the store type: 1- urban, 2- rural, 3- citycentre 
+#### e.	Shoptype-Indicates the shop type: 0- instore shop, 1- online collection, 2- online home delivery 
+#### f.	Income-The estimated income of the household.
+
+```{r}
+library(ggplot2)
+spend <- rnorm(500,105,15.75 )
+qtime <-rpois(500, 7)
+famsize <-rpois(500,4)
+store <- sample(1:3, 500, replace="TRUE")
+shoptype <- rbinom(500, 3, 0.14)
+income <-rnorm(500,38000,4500)
+
+weeklyshop <-data.frame (spend,qtime,famsize,store,shoptype,income)
+head(weeklyshop)
+```
+
+## Tasks:
+
+### Task 1: Summarizing each of the variables in the dataset using descriptive statistics.
+### Description: Only the quantitative variables can be considered to have statistical values. Even the though, store and shoptype categories are represented by code numbers, they are categorical and not quantitative. Figure 2.1 shows the statistical values of the quantitative variables. Figure 2.2 shows the statistical values for categorical variables. From that, we see that there are maximum (195) stores of type rural and minimum (148) stores of type citycentre in the store variable column. Also, there are maximum (309) of type instore shop and minimum (22) of type online home delivery 
+
+```{r}
+
+### These are quantitative variable
+summary(weeklyshop$spend)
+summary(weeklyshop$qtime)
+summary(weeklyshop$famsize)
+summary(weeklyshop$income)
+
+### These are categorical variable
+store_counts <- table(weeklyshop$store)
+print(store_counts)
+shop_counts <- table(weeklyshop$shoptype)
+print(store_counts)
+### We see that there are maximum(195) stores of type rural and minimum(148) stores of type citycentre.
+### Also, there are maximum (309) of type instore shop and minimum (22) of type online home delivery 
+```
+
+### Task 2: Visualization of a single variable
+### Description: The visualization of household members is shown in figure 3. About 350 of the household have members ranging between 3 and 5. Less than 150 households have either 1 or 2 members. About 20 to 30 households have members more than 5.
+
+
+```{r}
+qplot(famsize, data = weeklyshop,ylab="count",binwidth = 5)
+### The x-axis represents the different family sizes. 
+### The y-axis represents the count of occurrences for each family size. 
+### The histogram shows the distribution of family sizes in the weeklyshop data. 
+### The binwidth is set to 5, indicating that each bar represents a range of five family sizes.
+### The plot helps visualize how common different family sizes are in the dataset.
+```
+
+### Task 3: Visualization of the relationship between two variables
+### Description: Figure 4 shows the relationship between the income and the amount spent on shopping. We can say that there is no linear relationship between income and spend. People with estimated household income 40000 tend to spend around 125 and above just like others with income 50000.
+
+```{r}
+ggplot(weeklyshop, aes(x = income, y = spend)) +
+  geom_point(alpha = 0.5) +  # Add points with some transparency
+  ggtitle("Comparison of Spend and Income") +
+  xlab("Income") +
+  ylab("Spend") +
+  theme_minimal()
+### We have income on the x-axis and spend on the y-axis. Each point represents an observation in the dataset.
+### We use alpha to add transparency to the points, making it easier to see areas with higher point density.
+### We can infer that there is no linear relationship between income and spend. People with estimated household income 40000 tend to spend around 125 and above just like others with income 50000.
+```
+
+### Task 4: Examining the association of variable spend with a categorical variable.
+### Hypothesis: H1- No significant relationship between income and spend. H2- Significant positive relationship between income and spend 
+### Rationale: The hypothetical relationship between income and spend is based on the outcome of the association of higher income leading to higher spending or not.
+
+```{r}
+### Hypothesis Test- 
+anova_test <- aov(spend ~ income, data = weeklyshop)
+summary(anova_test)
+## Conclusion: Since the Pr (>F) is more than 0.05, it can be concluded that there is a significant positive difference in the income and spending level of amount, i.e., greater the income, greater the spending.
+```
+
+### Task 5: Choosing a pair of variables to investigate association using correlation.
+### Description: Below code shows the correlation between income and spend. Since the correlation coefficient is positive, the increase in income will also increase spending amount 
+
+```{r}
+# Correlation between income and spend
+anova_test <- aov(spend ~ income, data = weeklyshop)
+summary(anova_test)
+```
