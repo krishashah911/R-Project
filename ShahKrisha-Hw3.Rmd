@@ -1,0 +1,202 @@
+---
+title: "Math 660"
+output:
+  pdf_document: default
+  html_document: default
+date: "Sep 2023"
+theme: cerulean
+---
+
+<!-- For more info on RMarkdown see http://rmarkdown.rstudio.com/ -->
+
+## Name: Krisha Shah
+
+```{r echo=FALSE}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(ggplot2)
+goalkeepers <- read_csv("PremierLeague/goalkeepers-1920.csv", show_col_types = FALSE)
+players <- read_csv("PremierLeague/players-1920.csv", show_col_types = FALSE)
+scoresfixtures <- read_csv("PremierLeague/scoresfixtures-1920.csv", show_col_types = FALSE)
+standings <- read_csv("PremierLeague/standings-1920.csv", show_col_types = FALSE)
+teamgoalkeeping <- read_csv("PremierLeague/teamgoalkeeping-1920.csv", show_col_types = FALSE)
+teamstats <- read_csv("PremierLeague/teamstats-1920.csv", show_col_types = FALSE)
+```
+### 1. Answer the following
+
+### (a) How many teams are there in the league?
+
+```{r}
+num_of_teams <- length(unique(standings$Squad))
+print(num_of_teams)
+```
+### Comment: The standings-1920 dataset consist of final ranking of all teams for the league. Thus we can find all the team names in this dataset. There are a total of 20 teams.
+
+### (b) How many players are there in the league?
+
+```{r}
+num_of_players <- length(unique(players$Player))
+print(num_of_players)
+```
+### Comment: The players-1920 dataset consist of all the players information. Thus we can find the total number of players in this dataset. I also cofirmed that goalkeepers are included in the players-1920 dataset. Some of the player names are repeated in two different squad guessing they would be transferred mid-season. Hence there are 515 players in the league. 
+
+### (c) What is the total number of goals scored for the season?
+
+```{r}
+num_of_goals1 <- sum(players$Gls)
+print(num_of_goals1)
+
+num_of_goals3 <- sum(teamstats$Gls)
+print(num_of_goals3)
+```
+### Comment: We can find the total number of goals scored in the season either by using the players data or teamstats data. The total number of goals scores for the season is 1002.
+
+### (d) What is the average attendance (spectators) at the games?
+
+```{r}
+total_attendance <- mean(na.omit(scoresfixtures$Attendance))
+print(total_attendance)
+```
+### Comment: We can find the sum of total attendance in the standings dataset. Later to find the average attendace for games we divide by 380 (38 matches every week for 10 weeks). Average attendance at the games is 1568.216
+
+### 2. Identify the primary key for each table. Verify your answers. Note: ignore the Rk variable, as it usually just represents the row number.
+
+### Answer:
+#### (1) For goalkeepers-1920: (PrimaryKey - Player) - Player column has 37 unique names stating all of them are players.
+#### (2) For players-1920: (PrimaryKey - Player,Nation) - The player names are not unique since there might be some players who are tranferred to another team inbetween the league. Thus, a combination of player and nation will give us unique values. Thus it can be considered as a primary key.
+#### (3) For scoresfixtures-1920: (PrimaryKey - Date,Time,Home) - This dataset provides information about each match. There are 380 total matches that took place in the league. To identify them uniquely, we can say that each unique match is played on a specific date,time and home. No two matches can be played simultaneously at the same place and same time.
+#### (4) For standings-1920: (PrimaryKey - Squad) - This dataset gives information about the final ranking of the teams. Thus 20 unique teams make the primary key for the dataset.
+#### (5) For teamgoalkeeping-1920: (PrimaryKey - Squad) - This dataset gives information about the goalkeepers in each team. Thus 20 unique teams make the primary key for the dataset.
+#### (6) For teamstats-1920: (PrimaryKey - Squad) - This dataset gives information about the players of the teams. Thus 20 unique teams make the primary key for the dataset.
+```{r}
+scoresfixtures %>% count(Date, Time, Home) %>% filter(n>1)
+```
+
+### 3. Find a table with a foreign key(s), and write down the name of the table, the foreign key(s) and the associated table(s).
+
+### Answer: 
+#### (1) Table(goalkeepers) has foreign key(Player) associated with table(players)
+#### (2) Table(players) has foreign key(Squad) associated with table(standings)
+#### (3) Table(teamgoalkeeping) has foreign key(Squad) associated with table(standings)
+#### (4) Table(teamstats) has foreign key(Squad) associated with table(standings)
+
+
+### 4. For the players and goalkeepers data sets, the "Player" variable has two versions of the player name, and the "Nation" variable also has two abbreviations listed for the nationalities of the players. Create a new players tibble and a new goalkeepers tibble which contain only the first version of the player name (and not the second version), and the two abbreviations for "Nation" separated out into two columns, plus all the other columns unmodified. Assign the resulting tibbles to new names different from the original ones.
+
+```{r}
+players_new <- tibble(players %>% mutate(Player = strsplit(Player, "\\\\") %>% sapply(function(x) x[1])) %>% separate(Nation, into = c("Nation_Abbr_1", "Nation_Abbr_2"), sep = " "))
+print(players_new)
+```
+```{r}
+goalkeepers_new <- tibble(goalkeepers %>% mutate(Player = strsplit(Player, "\\\\") %>% sapply(function(x) x[1])) %>% separate(Nation, into = c("Nation_Abbr_1", "Nation_Abbr_2"), sep = " "))
+print(goalkeepers_new)
+```
+
+### 5. Find, for each team, the mean player age, the age of the youngest player and the age of the oldest player. Use this info to find the name(s) of the youngest player(s) for each team. Your output for the latter, separate from the output of the first part, should only contain the team name, the minimum age, and the name of the player.
+
+```{r}
+age <- players %>% group_by(Squad) %>% summarize(mean_age = mean(na.omit(Age)), youngest_player = min(Age), oldest_player = max(Age))
+print(age)
+```
+### Comment: We found that there were some null values which lead to wrong output for the Squad->Leicester City. Therefore, we omit the null values of the entire data. This is one of the possible ways of handling explicit null values. Later, group the dataset by Squad and find the mean, minimum and maximum age. Note that we do not have data for players age for Leicester City.
+
+```{r}
+youngest_players_info <- players %>% inner_join(age, by ="Squad") %>% filter(Age == youngest_player) %>% select(Squad, Age, Player) %>% arrange(Squad)
+
+print(youngest_players_info)
+```
+### Comment: Since there are multiple players in the same team/Squad with same minimum age we try to print them all in the order of the Squad names.
+
+### 6. Add the team performance numbers (specifically these ones: Possession, Assists, Penalty Kicks scored, Save percentage, and Clean sheet percentage) to the standings table. Add also the age statistics found in Q5 above to the standings table.
+
+```{r}
+columns_to_include1 <- c("Squad","Poss", "Ast", "PK")
+columns_to_include2 <- c("Squad","Save%", "CS%")
+# Adding team performance number to the "standings" dataset.
+standings_with_team_perf <- left_join(standings, teamstats %>% select(all_of(columns_to_include1)), by = "Squad")
+# Adding team performance number to the "standings" dataset.
+standings_with_team_perf <- left_join(standings_with_team_perf, teamgoalkeeping %>% select(all_of(columns_to_include2)), by = "Squad")
+# Adding the age statistics found in Q5 to the "standings" dataset.
+standings <- left_join(standings_with_team_perf, age, by = "Squad")
+
+print(standings)
+```
+### Then make the following plots (A vs B means A is on the y axis):
+
+### (a) Points attained vs Possession
+```{r}
+qplot(x = Poss, y = Pts, data = standings, xlab = "Possession", ylab = "Points Attained", main = "Points Attained vs Possession")
+```
+### (b) Points attained vs Save percentage
+```{r}
+qplot(x = `Save%`, y = Pts, data = standings, xlab = "Save percentage", ylab = "Points Attained", main = "Points Attained vs Save Percentage")
+```
+### (c) Points attained vs Goal against
+```{r}
+qplot(x = `GA`, y = Pts, data = standings, xlab = "Goal Against", ylab = "Points Attained", main = "Points Attained vs Goal Against")
+```
+### (d) Clean sheet percentage vs Save percentage
+```{r}
+qplot(x = `Save%`, y = `CS%`, data = standings, xlab = "Save Percentage", ylab = "Clean Sheet Percentage", main = "Clean sheet percentage vs Save percentage")
+```
+
+### 7. Identify the names of the top 3 referees that refereed the most games. Your R output should only show three referees. Obtain all the games they refereed. Your output for this should only contain columns for the week and date the game was played, name of the home and away teams, and the name of the referee.
+
+```{r}
+referee <- table(scoresfixtures$Referee)
+sorted_referee <- sort(referee, decreasing = TRUE)
+top_3_referees <- names(sorted_referee[1:3])
+top_3_referee <- data.frame(Referee = top_3_referees)
+print(top_3_referee)
+```
+
+```{r}
+columns_to_include1 <- c("Wk","Date", "Home", "Away", "Referee")
+top_3_referee_table <- left_join(top_3_referee, scoresfixtures %>% select(all_of(columns_to_include1)), by = "Referee")
+print(top_3_referee_table)
+```
+
+### 8. Obtain a list of the games played by the top 3 scoring teams (i.e. the 3 teams that scored the most goals), showing only week, date, home and away teams and the result (final score).
+
+```{r}
+top_3_scoring_teams <- teamstats %>% arrange(desc(Gls)) %>% slice_head(n = 3) %>% pull(Squad)
+print(top_3_scoring_teams)
+```
+
+```{r}
+columns_to_include1 <- c("Wk","Date", "Home", "Away", "Score")
+result <- scoresfixtures %>% select(all_of(columns_to_include1)) %>% filter(Home %in% top_3_scoring_teams | Away %in% top_3_scoring_teams)
+print(result)
+```
+### Reference: https://rdocumentation.org/packages/dplyr/versions/1.0.10/topics/slice
+### Reference: https://dplyr.tidyverse.org/reference/pull.html
+
+### 9. Find the 3 dates with the most games played. Your R output should only show three dates. Then obtain all the games that were played on these days (you can keep all the columns).
+
+```{r}
+dates <- table(scoresfixtures$Date)
+sorted_dates <- sort(dates, decreasing = TRUE)
+top_3_dates <- names(sorted_dates[1:3])
+top_3_date <- data.frame(Date = top_3_dates)
+print(top_3_date)
+```
+```{r}
+scoresfixtures$Date <- as.character(scoresfixtures$Date)
+top_3_dates_table <- left_join(top_3_date, scoresfixtures, by = "Date")
+print(top_3_dates_table)
+```
+
+### 10. Find the 3 dates with the most goals scored on those days (i.e. adding up all the goals scored in all the games played on that day). Your resulting tibble should only have 3 rows.
+
+```{r}
+most_goals_scored <- tibble(scoresfixtures %>% separate(Score,into = c("Goal_Team_1", "Goal_Team_2"), sep = "-"))
+scores <- as.integer(most_goals_scored$Goal_Team_1) + as.integer(most_goals_scored$Goal_Team_2)
+score <- cbind(most_goals_scored, scores)
+
+top_3_dates_max_score<- score %>% arrange(desc(scores)) %>% slice(1:3)
+print(top_3_dates_max_score)
+```
+
+
