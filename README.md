@@ -1,4 +1,4 @@
-# Project4: Exploratory Data Analysis of Weekly Shopping Dataset (CI7330)
+# Project 4: Exploratory Data Analysis of Weekly Shopping Dataset (CI7330)
 This project explores a manually created dataset containing key features related to weekly shopping activities. The dataset includes variables such as the amount spent, queue time, family size, store type, shopping type, and household income. The goal is to perform exploratory data analysis (EDA) to summarize the data, uncover relationships, and visualize insights that are easily understandable, even for a general audience.
 
 # Key Analyses & Insights:
