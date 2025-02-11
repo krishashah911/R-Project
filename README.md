@@ -8,11 +8,11 @@ This repository contains the following projects:
 
 **Project B** - This project examines COVID-19 case and death data across NYC boroughs using ggplot2 for visualization. It includes summary statistics, time series analysis, and comparisons of infection rates, testing, and hospitalizations across different neighborhoods.
 
-**Project C** - (Brief description of what it does)
+**Project C** - This project analyzes the 2019-20 Premier League season using R. It explores key statistics such as the number of teams and players, total goals scored, and attendance figures. It also identifies primary and foreign keys in the datasets, performs data cleaning, and visualizes relationships between team performance metrics, player statistics, and game outcomes.
 
-**Project D** - (Brief description of what it does)
+**Project D** - This project conducts an exploratory data analysis (EDA) of a manually created weekly shopping dataset. It summarizes key statistics of household spending, queue times, family sizes, and income levels. Using visualizations and hypothesis testing, it investigates relationships between income and spending patterns, the distribution of household sizes, and the impact of categorical variables on spending behavior.
 
-**Project E** - (Brief description of what it does)
+**Project E** - This project simulates the Central Limit Theorem (CLT) using R. It generates random samples from a Poisson distribution, computes standardized sample means, and compares the empirical cumulative distribution function (CDF) with the theoretical normal distribution. The visualization demonstrates how sample means converge to a normal distribution as the sample size increases.
   
 Each project has its own folder with a detailed README, data, and codebase.
 
