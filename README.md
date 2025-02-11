@@ -1,4 +1,4 @@
-# Project3: Premier League Analysis (Season 2019-2020)
+# Project 3: Premier League Analysis (Season 2019-2020)
 This project focuses on analyzing the performance and statistics of players, teams, and matches in the Premier League for the 2019-2020 season. Using multiple datasets, the analysis covers a range of metrics such as team performance, player statistics, match outcomes, and referee details. The goal is to gain insights into trends, compare teams and players, and explore key performance indicators.
 
 # Key Analyses & Insights:
