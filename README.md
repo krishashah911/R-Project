@@ -4,11 +4,15 @@ Welcome to R-Projects! This repository hosts multiple R projects, each designed 
 # 📂 Projects Overview
 This repository contains the following projects:
 
-- Project A - (Brief description of what it does)
-- Project B - (Brief description of what it does)
-- Project C - (Brief description of what it does)
-- Project D - (Brief description of what it does)
-- Project E - (Brief description of what it does)
+**Project A** - This project analyzes Citi Bike ridership data from Q4 2016, exploring trip counts, rider demographics, bike usage patterns, and subscription types. It includes visualizations, statistical summaries, and insights into unusual values and trends in bike trips.
+
+**Project B** - This project examines COVID-19 case and death data across NYC boroughs using ggplot2 for visualization. It includes summary statistics, time series analysis, and comparisons of infection rates, testing, and hospitalizations across different neighborhoods.
+
+**Project C** - (Brief description of what it does)
+
+**Project D** - (Brief description of what it does)
+
+**Project E** - (Brief description of what it does)
   
 Each project has its own folder with a detailed README, data, and codebase.
 
@@ -16,9 +20,13 @@ Each project has its own folder with a detailed README, data, and codebase.
 Click below to explore individual projects:
 
 [Project A](https://github.com/krishashah911/R-Projects/blob/krishashah911-project-1/README.md)
+
 [Project B](https://github.com/krishashah911/R-Projects/blob/krishashah911-project-2/README.md)
+
 [Project C](https://github.com/krishashah911/R-Projects/blob/krishashah911-project-3/README.md)
+
 [Project D](https://github.com/krishashah911/R-Projects/blob/krishashah911-project-4/README.md)
+
 [Project E](https://github.com/krishashah911/R-Projects/blob/krishashah911-project-5/README.md)
 
 # 🛠 How to Use
