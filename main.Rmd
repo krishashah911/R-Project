@@ -1,0 +1,34 @@
+generate_readme <- function(repo_path) {
+  # List all project directories (assuming they are directly under repo_path)
+  projects <- list.dirs(repo_path, full.names = FALSE, recursive = FALSE)
+  
+  # Initialize README content
+  readme_content <- "# R-Projects Summary\n\n"
+  readme_content <- paste0(readme_content, "This repository contains multiple R projects. Below is a list of available projects with links to their respective directories.\n\n")
+  
+  # Iterate through projects and add them to README
+  for (project in projects) {
+    project_path <- file.path(repo_path, project, "README.md")
+    
+    # Check if README.md exists in the project
+    if (file.exists(project_path)) {
+      # Read first few lines from the project's README to get a summary
+      readme_lines <- readLines(project_path, n = 5)
+      summary_text <- paste(readme_lines, collapse = " ")
+      
+      # Format summary
+      readme_content <- paste0(readme_content, "## [", project, "](./", project, ")\n\n", summary_text, "\n\n")
+    } else {
+      # If no README, just list the project
+      readme_content <- paste0(readme_content, "## [", project, "](./", project, ")\n\n_No description available._\n\n")
+    }
+  }
+  
+  # Write to README.md in the main branch
+  writeLines(readme_content, file.path(repo_path, "README.md"))
+  
+  message("README.md has been generated successfully!")
+}
+
+# Example usage
+# generate_readme("/path/to/R-Projects")
