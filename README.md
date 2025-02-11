@@ -1,4 +1,4 @@
-# Project: Simulation Studies and Statistical Models
+# Project 5: Simulation Studies and Statistical Models
 This project encompasses several simulation-based analyses to explore statistical concepts such as the Central Limit Theorem (CLT), binomial probability estimation, the exponential distribution, and AR(1) models.
 
 # Key Analyses & Insights:
