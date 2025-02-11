@@ -15,7 +15,11 @@ Each project has its own folder with a detailed README, data, and codebase.
 # 🔗 Quick Links
 Click below to explore individual projects:
 
-[Project A](./krishashah911-project-1/README.md)
+[Project A](https://github.com/krishashah911/R-Projects/blob/krishashah911-project-1/README.md)
+[Project B](https://github.com/krishashah911/R-Projects/blob/krishashah911-project-2/README.md)
+[Project C](https://github.com/krishashah911/R-Projects/blob/krishashah911-project-3/README.md)
+[Project D](https://github.com/krishashah911/R-Projects/blob/krishashah911-project-4/README.md)
+[Project E](https://github.com/krishashah911/R-Projects/blob/krishashah911-project-5/README.md)
 
 # 🛠 How to Use
 1. Clone this repository:
